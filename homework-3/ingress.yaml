@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: kuber-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - host: arch.homework
     http:
