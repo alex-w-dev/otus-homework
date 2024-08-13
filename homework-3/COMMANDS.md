@@ -32,4 +32,27 @@ kubectl apply -f ./homework-3/ns.yaml
 #создать/удлаить неймспейс
 kubectl create ns google
 kubectl delete ns google
+
+#просмотр репликсетов в реал тайме (не чистит старый вывод)
+kubectl get rs -w --namespace=test
+
+#получение сервисов
+kubectl get service
+kubectl get svc
+```
+### others
+```bash
+#тунель для service type LoadBalancer (задает external_ip для service)
+minikube tunnel
+
+minikube ssh
+exit
+
+minikube addons list
+minikube addons enable ingress
+
+kubectl exec -it homework-deployment-5bcfd65bb7-g7s7g -- /bin/sh
+
+apk update && apk add curl
+
 ```

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: homework-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: homework-app
+    spec:
+      containers:
+      - name: homework-2
+        image: proferio/homework-2:0.0.1
+        ports:
+        - name: liveness-port
+          containerPort: 8000
+
+        livenessProbe:
+          exec:
+            command:
+            - cat
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 10
+          periodSeconds: 10
