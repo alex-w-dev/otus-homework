@@ -37,3 +37,6 @@ kubectl apply -f ingress-rewrite.yaml
 
 - [http://arch.homework/otusapp/MyAccont/health](http://arch.homework/otusapp/MyAccont/health) - то будет перенаправление как в задании...
 - но в целом тюнить надо, потому что каким-то образом этот ингрес забирает на себя этот урл [http://arch.homework/health/gggew](http://arch.homework/health/gggew) , хотя в описании нет правил, видимо какие-то флаги надо раскопать ... Кстати `nginx.ingress.kubernetes.io/rewrite-target: /health`, потому что в задании так: все запросы на /health , так-то я бы `$2` поставил, чтобы всё, что после `otusapp/MyAccont/*` забиралось как есть
+
+----
+ПОСТМАН ОБЯЗАТЕЛЬНО ПОДЪЕДЕТ К СЛЕДУЮЩЕМУ РАЗУ!
