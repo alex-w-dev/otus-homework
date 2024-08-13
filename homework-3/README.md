@@ -36,7 +36,8 @@ kubectl apply -f ingress-rewrite.yaml
 ```
 
 - [http://arch.homework/otusapp/MyAccont/health](http://arch.homework/otusapp/MyAccont/health) - то будет перенаправление как в задании...
-- но в целом тюнить надо, потому что каким-то образом этот ингрес забирает на себя этот урл [http://arch.homework/health/gggew](http://arch.homework/health/gggew) , хотя в описании нет правил, видимо какие-то флаги надо раскопать ... Кстати `nginx.ingress.kubernetes.io/rewrite-target: /health`, потому что в задании так: все запросы на /health , так-то я бы `$2` поставил, чтобы всё, что после `otusapp/MyAccont/*` забиралось как есть
+- но в целом тюнить надо, потому что каким-то образом этот ингрес забирает на себя этот урл [http://arch.homework/health/gggew](http://arch.homework/health/gggew) , хотя в описании нет правил, видимо какие-то флаги надо раскопать ... Кстати `nginx.ingress.kubernetes.io/rewrite-target: /$2`, потому что в задании так: "curl arch.homework/otusapp/aeugene/health -> рерайт пути на arch.homework/health", поэтому после `otusapp/MyAccont/*` забирается как есть... хотя может показаться что надо сделать `nginx.ingress.kubernetes.io/rewrite-target: /health` ... так тоже можно, если что...
 
-----
+---
+
 ПОСТМАН ОБЯЗАТЕЛЬНО ПОДЪЕДЕТ К СЛЕДУЮЩЕМУ РАЗУ!
