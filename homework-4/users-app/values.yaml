@@ -1,25 +1,12 @@
-mongodb:
-
-userService:
-  image: "proferio/homework-4:v0.0.2"
-  port: 8000
-  uri: "mongodb://mongo:27017"
-
-# Default values for nodeapp.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 2
 
 image:
   repository: "proferio/homework-4"
   tag: "v0.0.4"
-  pullPolicy: IfNotPresent
+  port: 8000
 
-nameOverride: ""
-fullnameOverride: ""
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 8000

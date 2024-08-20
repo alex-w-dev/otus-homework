@@ -2,7 +2,6 @@ architecture: replicaset
 replicaCount: 2
 port: 27017
 replicaSetName: db
-podDisruptionBudget: {}
 auth:
   enabled: true
   rootPassword: password
