@@ -34,7 +34,8 @@ minikube tunnel
 newman run otus-homework-4.postman_collection.json
 ```
 
-<a name="my-scrinshot">у меня такие логи</a>, надеюсь, что у вас такие же:
+<a name="my-scrinshot">у меня такие логи</a>, надеюсь, что у вас такие же:    
+
 ![NewmanScreenshot.png](./NewmanScreenshot.png?raw=true)
 
 ----
