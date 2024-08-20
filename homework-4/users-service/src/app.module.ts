@@ -4,20 +4,29 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongoClient } from 'mongodb';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.example' }),
     UserModule,
     MongooseModule.forRootAsync({
-      useFactory(configService: ConfigService) {
-        return {
-          uri: configService.get<string>('DATABASE_URI'),
+      useFactory: async (configService: ConfigService) => {
+        const url = `mongodb://${configService.get('MONGO_USERNAME')}:${configService.get('MONGO_PASSWORD')}@${configService.get('MONGO_HOSTNAME')}:${configService.get('MONGO_PORT')}/${configService.get('MONGO_DB')}? ${configService.get('MONGO_REPLICASET') ? `replicaSet=${configService.get('MONGO_REPLICASET')}&` : ''}`;
 
-          dbName: configService.get<string>('DATABASE_NAME'),
+        console.log(url);
+        // const client = new MongoClient(url);
+        // await client.connect();
+        // await client.db('admin').command({ ping: 1 });
+        console.log('Connected successfully to server');
+        return {
+          uri: `mongodb://${configService.get('MONGO_HOSTNAME')}:${configService.get('MONGO_PORT')}`,
+          replicaSet: configService.get<string>('MONGO_REPLICASET'),
+
+          dbName: configService.get<string>('MONGO_DB'),
           auth: {
-            username: configService.get<string>('DATABASE_USER'),
-            password: configService.get<string>('DATABASE_PASS'),
+            username: configService.get<string>('MONGO_USERNAME'),
+            password: configService.get<string>('MONGO_PASSWORD'),
           },
         };
       },

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: users-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - name: liveness-port
+              containerPort: {{ .Values.userService.port }}
+
+          env:
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: MONGO_USERNAME
+                  name: {{ .Release.Name }}-auth
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MONGO_PASSWORD
+                  name: {{ .Release.Name }}-auth
+            - name: MONGO_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_HOSTNAME
+                  name: {{ .Release.Name }}-config
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_PORT
+                  name: {{ .Release.Name }}-config
+            - name: MONGO_DB
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_DB
+                  name: {{ .Release.Name }}-config      
+            - name: MONGO_REPLICASET
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_REPLICASET
+                  name: {{ .Release.Name }}-config
+
+          livenessProbe:
+            exec:
+              command:
+                - cat
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: liveness-port
+            failureThreshold: 10
+            periodSeconds: 10
