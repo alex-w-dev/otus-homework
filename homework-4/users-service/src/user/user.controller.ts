@@ -33,8 +33,11 @@ export class UserController {
   }
 
   @Put(':userId')
-  update(@Body() user: UserCreateDto): Promise<User> {
-    return this.userService.update(user);
+  update(
+    @Param('userId') userId: string,
+    @Body() user: UserCreateDto,
+  ): Promise<User> {
+    return this.userService.update({ ...user, _id: userId });
   }
 
   @Delete(':userId')
