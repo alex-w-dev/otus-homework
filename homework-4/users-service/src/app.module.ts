@@ -5,11 +5,13 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongoClient } from 'mongodb';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.example' }),
     UserModule,
+    PrometheusModule.register(),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => {
         const url = `mongodb://${configService.get('MONGO_USERNAME')}:${configService.get('MONGO_PASSWORD')}@${configService.get('MONGO_HOSTNAME')}:${configService.get('MONGO_PORT')}/${configService.get('MONGO_DB')}? ${configService.get('MONGO_REPLICASET') ? `replicaSet=${configService.get('MONGO_REPLICASET')}&` : ''}`;
