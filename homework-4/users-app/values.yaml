@@ -2,9 +2,8 @@ replicaCount: 2
 
 image:
   repository: "proferio/homework-4"
-  tag: "v0.0.4"
+  tag: "v0.0.6"
   port: 8000
-
 
 service:
   type: ClusterIP

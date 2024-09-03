@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongoClient } from 'mongodb';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { LoggingInterceptor } from './logging.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -36,6 +38,12 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
