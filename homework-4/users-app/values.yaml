@@ -9,3 +9,19 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 8000
+
+prometheus:
+  alertmanager:
+    enabled: false
+
+  pushgateway:
+    enabled: false
+
+  nodeExporter:
+    enabled: false
+
+grafana:
+  persistence:
+    enabled: true
+  service:
+    type: NodePort
