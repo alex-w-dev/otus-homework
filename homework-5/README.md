@@ -76,3 +76,6 @@ kubectl get secret users-app-grafana -o jsonpath="{.data.admin-password}" | base
 ![alt text](image.png)
 
 для node.js использовал готовый grafana dashboard ID: 11159
+
+<a name="result">🔗</a>вот что получилось:
+![alt text](image-1.png)
