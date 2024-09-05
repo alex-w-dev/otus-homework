@@ -3,6 +3,8 @@
 https://medium.com/@gayatripawar401/deploy-prometheus-and-grafana-on-kubernetes-using-helm-5aa9d4fbae66
 https://www.youtube.com/watch?v=2ESOGJTXv1s
 
+Продолжал работку в папке `homework-4`
+
 ### установил prometheus в app, залил в докер.
 
 без комментариев ))
