@@ -1,0 +1,9 @@
+{{- if .Values.development.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: ExternalName
+  externalName: host.minikube.internal
+{{- end -}}
