@@ -19,6 +19,8 @@
 helm upgrade alex-homework-6 --install --create-namespace --namespace=homework-6 ./app
 ```
 
+(1.0) Убедиться что все стартануло можно командой `kubectl get po -n homework-6` - 2 пода должны быть READY (напоминаю что другие сервисы подключу позднее, когда нудо будет расширять приложение)
+
 (1.1) Дамашняя работа в неймспейсе `homework-6`, поэтому сменим неймспейс, если будете пользоваться kubectl: `kubectl config set-context --current --namespace=homework-6`
 
 (2) Не забываем включить тунель в отдельном окне терминала и настроить hosts:
