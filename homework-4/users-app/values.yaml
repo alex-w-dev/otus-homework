@@ -21,6 +21,10 @@ prometheus:
     enabled: false
 
 grafana:
+  admin:
+    existingSecret: users-app-auth
+    userKey: grafana-user
+    passwordKey: grafana-password
   persistence:
     enabled: true
   service:

@@ -19,7 +19,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
-        prometheus.io/port: "8000"
+        prometheus.io/port: {{ .Values.image.port | quote }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

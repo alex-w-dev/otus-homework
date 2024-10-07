@@ -9,41 +9,11 @@ https://www.youtube.com/watch?v=2ESOGJTXv1s
 
 без комментариев ))
 
-### установка и запуск графаны
+### установка и запуск прложения (в него (helm) добавил и графану)
 
-В helmchart добавил dependency
+Команды запускать в папке helmchart (`cd homework-4/users-app`):
 
-```yaml
-dependencies:
-  - name: prometheus
-    version: "15.18.0"
-    repository: "https://prometheus-community.github.io/helm-charts"
-  - name: grafana
-    version: "6.43.5"
-    repository: "https://grafana.github.io/helm-charts"
-```
-
-в helmchart values.yaml добавил:
-
-```yaml
-prometheus:
-  alertmanager:
-    enabled: false
-
-  pushgateway:
-    enabled: false
-
-  nodeExporter:
-    enabled: false
-
-grafana:
-  persistence:
-    enabled: true
-  service:
-    type: NodePort
-```
-
-не забыть обновить dependencies (В папке helmchart (`cd homework-4/users-app`)):
+не забыть обновить dependencies :
 
 ```bash
 helm dependency update
@@ -52,32 +22,50 @@ helm dependency update
 и запускаем helm:
 
 ```bash
-helm install users-app .
+helm upgrade --install users-app . -n homework-5 --create-namespace
 ```
 
 залогинился в Графана:
+user `admin`, password: `admin`:
 
 ```bash
 #находим существующий сервис графаны "user-app-grafana"
 kubectl get svc
 # если есть, то проксируем его в локалхост (отдельный терминал)
-minikube service user-app-grafana
+minikube service users-app-grafana -n homework-5
 ```
 
-user `admin`, password:
+Прометей, если надо тестировать запросы:
 
 ```bash
-#get secrete vaule for powershell
-kubectl get secret users-app-grafana -o jsonpath="{.data.admin-password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
-# ... or for bash:
-kubectl get secret users-app-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+#(отдельный терминал)
+minikube service users-app-prometheus-server -n homework-5
 ```
 
-Добавил в Grafana datasorce prometheus по ссылке в кластере (`users-app-prometheus-server`)
+# Тепрь к дашбордам:
 
-![alt text](image.png)
+Я взял готовй за основу "Kubernetes Nginx Ingress Prometheus NextGen" (ID 14314), а затем поправил под себя:
 
-для node.js использовал готовый grafana dashboard ID: 11159
+Сам дашборд в файле [grafana-ingress.json](grafana-ingress.json)
 
-<a name="result">🔗</a>вот что получилось:
-![alt text](image-1.png)
+#### Скриншоты разбикви по апи методам (тут я наверно не доконца понял как именно сделать, но вот что получилось):
+
+500:
+![alt text](image-2.png)
+
+RPS:
+![alt text](image-3.png)
+
+Latency:
+![alt text](image-4.png)
+
+#### Скриншоты с метрикам в целом по сервису, взятые с nginx-ingress-controlle:
+
+500 (справа):
+![alt text](image-5.png)
+
+RPS:
+![alt text](image-8.png)
+
+Latency:
+![alt text](image-7.png)

@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
   annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/actuator/prometheus'
+    prometheus.io/port: '80'
+    ingress.kubernetes.io/cache-enable: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
@@ -10,6 +14,27 @@ spec:
   - host: arch.homework
     http:
       paths:
+      - path: /health
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-service
+            port:
+              number: 80
+      - path: /user
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-service
+            port:
+              number: 80
+      - path: /user/.*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-service
+            port:
+              number: 80
       - path: /.*
         pathType: ImplementationSpecific
         backend:
