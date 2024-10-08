@@ -25,6 +25,14 @@ helm dependency update
 helm upgrade --install users-app . -n homework-5 --create-namespace
 ```
 
+если надо тесты запустить, то:
+
+```bash
+#homework-4/
+cd ../
+newman run otus-homework-4.postman_collection.json
+```
+
 залогинился в Графана:
 user `admin`, password: `admin`:
 
@@ -69,3 +77,6 @@ RPS:
 
 Latency:
 ![alt text](image-7.png)
+
+и лерты при Latency и 500:
+![alt text](image-9.png)
