@@ -78,5 +78,6 @@ RPS:
 Latency:
 ![alt text](image-7.png)
 
-и лерты при Latency и 500:
+#### и лерты при Latency и 500:
+
 ![alt text](image-9.png)
