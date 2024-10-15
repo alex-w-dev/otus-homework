@@ -1,10 +1,10 @@
-{{- if .Values.development.enabled -}}
+{{- if (.Values.development).enabled -}}
 #  теперь твои локальные приложения могут подключиться к сервисам внутри minikube
 #  не забудь использовать forward port  для проксирования порта https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: {{ .Release.Name }}-development-service
 spec:
   type: ExternalName
   externalName: host.minikube.internal

@@ -18,7 +18,7 @@ Nginx выступает в роли API Gateway, настроен следую�
 (1) Устанавливаем наш хелм чарт , который имеет в себе инструкции по запуску нашего приложения (неймспейс `homework-7-billing`):
 
 ```bash
-helm upgrade homework-7-billing --install --create-namespace --namespace=homework-7-billing ./app --set development.enabled=true
+helm upgrade homework-7-billing --install --create-namespace --namespace=homework-7-billing ./app --set "development.enabled=true"
 ```
 
 (1.0) Убедиться, что все стартануло, можно командой `kubectl get po -n homework-7-billing` - 2 пода должны быть READY (напоминаю что другие сервисы подключу позднее, когда нужно будет расширять приложение)
