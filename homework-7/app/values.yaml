@@ -1,0 +1,34 @@
+# development:
+#   enabled: true
+
+mysql:
+  auth:
+    # тут я еще не разобрался: как устаноыить пароль на БД и в то же время пробросить его в деплоймент ??
+    rootPassword: "htrhwrthwtjhwtjwtwthrth"
+    database: "auth3"
+
+replicaCount: 2
+
+authMicroservice:
+  repository: "proferio/homework-6"
+  tag: "v0.0.1"
+  port: 8000
+  service:
+    type: ClusterIP
+    port: 80
+
+prometheus:
+  alertmanager:
+    enabled: false
+
+  pushgateway:
+    enabled: false
+
+  nodeExporter:
+    enabled: false
+
+grafana:
+  persistence:
+    enabled: true
+  service:
+    type: NodePort

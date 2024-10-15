@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-auth-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-auth-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-auth-app
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-auth-app
+          image: "{{ .Values.authMicroservice.repository }}:{{ .Values.authMicroservice.tag }}"
+          ports:
+            - name: liveness-port
+              containerPort: {{ .Values.authMicroservice.port }}
+
+          env:
+            - name: PORT
+              value: {{ .Values.authMicroservice.port | quote }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: JWT_SECRET
+            - name: REFRESH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: REFRESH_JWT_SECRET
+            - name: JWT_EXPIRE_IN
+              valueFrom:
+                configMapKeyRef:
+                  key: JWT_EXPIRE_IN
+                  name: {{ .Release.Name }}-config
+            - name: REFRESH_JWT_EXPIRE_IN
+              valueFrom:
+                configMapKeyRef:
+                  key: REFRESH_JWT_EXPIRE_IN
+                  name: {{ .Release.Name }}-config
+            - name: MYSQL_HOST
+              value: {{ .Release.Name }}-mysql-headless.{{ .Release.Namespace }}.svc.cluster.local
+            - name: MYSQL_PORT
+              value: {{ 3306 | quote}}
+            - name: MYSQL_USERNAME
+              value: root
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.mysql.auth.rootPassword }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.auth.database}}
+
+          livenessProbe:
+            exec:
+              command:
+                - cat
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: liveness-port
+            failureThreshold: 10
+            periodSeconds: 10
