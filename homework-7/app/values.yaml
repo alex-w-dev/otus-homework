@@ -8,6 +8,43 @@ mysql:
     rootPassword: "htrhwrthwtjhwtjwtwthrth"
     database: "auth3"
 
+rabbitmq:
+  auth:
+    password: "trhkrtkjyerfgvfrrtr"
+    username: "user"
+    tls:
+      enable: false
+      sslOptionsVerify: "verify_none"
+      failIfNoPeerCert: false
+  ldap:
+    tls:
+      skipVerify: true
+      verify: "verify_none"
+  # #START
+  # extraSecrets:
+  #   load-definition:
+  #     load_definition.json: |
+  #       {
+  #         "users": [
+  #           {
+  #             "name": "{{ .Values.auth.username }}",
+  #             "password": "{{ .Values.auth.password }}",
+  #             "tags": "administrator"
+  #           }
+  #         ],
+  #         "vhosts": [
+  #           {
+  #             "name": "/"
+  #           }
+  #         ]
+  #       }
+  # loadDefinition:
+  #   enabled: true
+  #   existingSecret: load-definition
+  # extraConfiguration: |
+  #   load_definitions = /app/load_definition.json
+  # # END
+
 replicaCount: 2
 
 authMicroservice:
