@@ -48,9 +48,10 @@ rabbitmq:
 replicaCount: 2
 
 authMicroservice:
-  repository: "proferio/homework-6"
-  tag: "v0.0.1"
-  port: 8000
+  app:
+    repository: "proferio/homework-6"
+    tag: "v0.0.1"
+    port: 8000
   service:
     type: ClusterIP
     port: 80

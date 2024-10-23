@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: {{ .Release.Name }}-auth-app
-          image: "{{ .Values.authMicroservice.repository }}:{{ .Values.authMicroservice.tag }}"
+          image: "{{ .Values.authMicroservice.app.repository }}:{{ .Values.authMicroservice.app.tag }}"
           ports:
             - name: liveness-port
-              containerPort: {{ .Values.authMicroservice.port }}
+              containerPort: {{ .Values.authMicroservice.app.port }}
 
           env:
             - name: PORT
-              value: {{ .Values.authMicroservice.port | quote }}
+              value: {{ .Values.authMicroservice.app.port | quote }}
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
