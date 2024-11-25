@@ -1,703 +1,733 @@
 {
-  "info": {
-    "_postman_id": "0c83e212-539e-43e5-a577-65f5d6056686",
-    "name": "otus-homework-6",
-    "description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "2810581"
-  },
-  "item": [
-    {
-      "name": "Register",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful POST create user\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.collectionVariables.set(\"userId\", jsonData.id);",
-              "    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"userUsername\"))",
-              "    pm.expect(jsonData.email).to.be.eq(pm.collectionVariables.get(\"userEmail\"))",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
-              "pm.request.body.raw = repalcedRequestBodyRaw;\r",
-              "const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
-              "pm.collectionVariables.set(\"userEmail\", requestBodyJson.email);\r",
-              "pm.collectionVariables.set(\"userUsername\", requestBodyJson.username);\r",
-              "pm.collectionVariables.set(\"userPassword\", requestBodyJson.password);"
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"{{$randomUserName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"!{{$randomPassword}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/register",
-          "host": ["{{base_url}}"],
-          "path": ["user", "register"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Unauthorized Update User",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Fail Unauthorized Update User\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([401]);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "PATCH",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"{{userUsernameUpdate}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"{{$randomEmail}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/{{userId}}",
-          "host": ["{{base_url}}"],
-          "path": ["user", "{{userId}}"]
-        },
-        "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Unauthorized Read Profile",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Fail Unauthorized Read Profile\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([401]);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/profile",
-          "host": ["{{base_url}}"],
-          "path": ["user", "profile"]
-        },
-        "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Login",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful POST login\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.accessToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken === jsonData.accessToken).to.be.equal(false)",
-              "    pm.collectionVariables.set(\"userAccessToken\", jsonData.accessToken);",
-              "    pm.collectionVariables.set(\"userRefreshToken\", jsonData.refreshToken);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/auth/login",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "login"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Successful refresh token",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful refresh token\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([201]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.accessToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken === jsonData.accessToken).to.be.equal(false)",
-              "    pm.collectionVariables.set(\"userAccessToken\", jsonData.accessToken);",
-              "    pm.collectionVariables.set(\"userRefreshToken\", jsonData.refreshToken);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{userRefreshToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/auth/refresh",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "refresh"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Authorized Read Profile",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Authorized Read Profile\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"userUsername\"))",
-              "    pm.expect(jsonData.email).to.be.eq(pm.collectionVariables.get(\"userEmail\"))",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{userAccessToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/profile",
-          "host": ["{{base_url}}"],
-          "path": ["user", "profile"]
-        },
-        "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Authorized Update User",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Authorized Update User Success\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([201, 200]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.collectionVariables.set(\"userUsername\", jsonData.username);",
-              "    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"userUsernameUpdate\"))",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
-              "pm.request.body.raw = repalcedRequestBodyRaw;\r",
-              "const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
-              "pm.collectionVariables.set(\"userUsernameUpdate\", requestBodyJson.username);"
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{userAccessToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"{{$randomUserName}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/{{userId}}",
-          "host": ["{{base_url}}"],
-          "path": ["user", "{{userId}}"]
-        },
-        "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Signout",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful POST Signout\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([ 201]);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{userAccessToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/auth/signout",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "signout"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Unsuccessful try to refresh token Copy",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Unsuccessful try to refresh token\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([401]);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{userRefreshToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/auth/refresh",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "refresh"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Register Hacker",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful hacker register\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.collectionVariables.set(\"hackerId\", jsonData.id);",
-              "    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"hackerUsername\"))",
-              "    pm.expect(jsonData.email).to.be.eq(pm.collectionVariables.get(\"hackerEmail\"))",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
-              "pm.request.body.raw = repalcedRequestBodyRaw;\r",
-              "const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
-              "pm.collectionVariables.set(\"hackerEmail\", requestBodyJson.email);\r",
-              "pm.collectionVariables.set(\"hackerUsername\", requestBodyJson.username);\r",
-              "pm.collectionVariables.set(\"hackerPassword\", requestBodyJson.password);"
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"{{$randomUserName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"!{{$randomPassword}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/register",
-          "host": ["{{base_url}}"],
-          "path": ["user", "register"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Login Hacker",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful hacker login\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.accessToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken.length).to.be.greaterThan(1)",
-              "    pm.expect(jsonData.refreshToken === jsonData.accessToken).to.be.equal(false)",
-              "    pm.collectionVariables.set(\"hackerAccessToken\", jsonData.accessToken);",
-              "    pm.collectionVariables.set(\"hackerRefreshToken\", jsonData.refreshToken);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "packages": {},
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"{{hackerEmail}}\",\n  \"password\": \"{{hackerPassword}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/auth/login",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "login"]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
-    },
-    {
-      "name": "Authorized Hacker Update User",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Fail Authorized hacker Update User\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([403]);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript",
-            "packages": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "PATCH",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{hackerAccessToken}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"{{$randomUserName}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/user/{{userId}}",
-          "host": ["{{base_url}}"],
-          "path": ["user", "{{userId}}"]
-        },
-        "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-      },
-      "response": []
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "base_url",
-      "value_": "http://arch.homework",
-      "value": "http://localhost:3000"
-    },
-    {
-      "key": "userId",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "userUsername",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userEmail",
-      "value": ""
-    },
-    {
-      "key": "userPassword",
-      "value": ""
-    },
-    {
-      "key": "userUsernameUpdate",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userAccessToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userRefreshToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "hackerEmail",
-      "value": ""
-    },
-    {
-      "key": "hackerUsername",
-      "value": ""
-    },
-    {
-      "key": "hackerPassword",
-      "value": ""
-    },
-    {
-      "key": "hackerId",
-      "value": ""
-    },
-    {
-      "key": "hackerAccessToken",
-      "value": ""
-    },
-    {
-      "key": "hackerRefreshToken",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "aa5117bd-9032-4c53-a661-be74246e3d00",
+		"name": "otus-homework-7-billing",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" width=\"2162\" height=\"1530\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2810581"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST create user\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    var jsonData = pm.response.json();",
+							"    pm.collectionVariables.set(\"userId\", jsonData.id);",
+							"    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"userUsername\"))",
+							"    pm.expect(jsonData.email).to.be.eq(pm.collectionVariables.get(\"userEmail\"))",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
+							"pm.request.body.raw = repalcedRequestBodyRaw;\r",
+							"const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
+							"pm.collectionVariables.set(\"userEmail\", requestBodyJson.email);\r",
+							"pm.collectionVariables.set(\"userUsername\", requestBodyJson.username);\r",
+							"pm.collectionVariables.set(\"userPassword\", requestBodyJson.password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{$randomUserName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"!{{$randomPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/user/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"register"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST login\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.accessToken.length).to.be.greaterThan(1)",
+							"    pm.expect(jsonData.refreshToken.length).to.be.greaterThan(1)",
+							"    pm.expect(jsonData.refreshToken === jsonData.accessToken).to.be.equal(false)",
+							"    pm.collectionVariables.set(\"userAccessToken\", jsonData.accessToken);",
+							"    pm.collectionVariables.set(\"userRefreshToken\", jsonData.refreshToken);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User initital Billing data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.bill % (pm.collectionVariables.get(\"userBillStep\") || 0)).to.be.eq(0);",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Top Up User's Bill",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.bill).to.be.eq( +pm.collectionVariables.get(\"userBill\") + +pm.collectionVariables.get(\"userBillStep\"));",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"bill\": {{userBillStep}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user/top-up-bill",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user",
+						"top-up-bill"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Make Chip Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Create User's chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.cost).to.be.eq( +pm.collectionVariables.get(\"chipOrderCost\"));",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cost\": {{chipOrderCost}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/make-order",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"make-order"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Billing data After Chip order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\") - +pm.collectionVariables.get(\"chipOrderCost\"));",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Last User notifaction ihas success message after chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data[0].type).to.be.eq('success');",
+							"    pm.expect(data[0].text).to.be.eq('Successfully payid your order');",
+							"    pm.expect(data[0].userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notification_base_url}}/notification/user/notifications",
+					"host": [
+						"{{notification_base_url}}"
+					],
+					"path": [
+						"notification",
+						"user",
+						"notifications"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "MakeExpensive Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Create User's expensive order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.cost).to.be.eq( +pm.collectionVariables.get(\"expensiveOrderCost\"));",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cost\": {{expensiveOrderCost}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/make-order",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"make-order"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Billing data After Expensive order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should not change User's bill after expensive order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\"));",
+							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user notifications after Expensive order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Last User notifaction has ERROR message after chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data[0].type).to.be.eq('error');",
+							"    pm.expect(data[0].text).to.be.eq('Not payed your order');",
+							"    pm.expect(data[0].userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notification_base_url}}/notification/user/notifications",
+					"host": [
+						"{{notification_base_url}}"
+					],
+					"path": [
+						"notification",
+						"user",
+						"notifications"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://arch.homework"
+		},
+		{
+			"key": "billing_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "order_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "notification_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "chipOrderCost",
+			"value": "150",
+			"type": "string"
+		},
+		{
+			"key": "expensiveOrderCost",
+			"value": "9999",
+			"type": "string"
+		},
+		{
+			"key": "userBillStep",
+			"value": "200",
+			"type": "string"
+		},
+		{
+			"key": "userUsername",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userBill",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userEmail",
+			"value": ""
+		},
+		{
+			"key": "userPassword",
+			"value": ""
+		},
+		{
+			"key": "userUsernameUpdate",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userAccessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userRefreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "hackerEmail",
+			"value": ""
+		},
+		{
+			"key": "hackerUsername",
+			"value": ""
+		},
+		{
+			"key": "hackerPassword",
+			"value": ""
+		},
+		{
+			"key": "hackerId",
+			"value": ""
+		},
+		{
+			"key": "hackerAccessToken",
+			"value": ""
+		},
+		{
+			"key": "hackerRefreshToken",
+			"value": ""
+		}
+	]
 }
