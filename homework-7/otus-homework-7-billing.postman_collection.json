@@ -128,10 +128,10 @@
 							"pm.test(\"Successful Get User's initital billing data\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.bill % (pm.collectionVariables.get(\"userBillStep\") || 0)).to.be.eq(0);",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.bill % (+pm.collectionVariables.get(\"userBillStep\") || 0)).to.be.eq(0);",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"    ",
-							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
 							"});",
 							""
 						],
@@ -182,13 +182,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"pm.test(\"Successful top up user's bill\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.bill).to.be.eq( +pm.collectionVariables.get(\"userBill\") + +pm.collectionVariables.get(\"userBillStep\"));",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.bill).to.be.eq( +pm.collectionVariables.get(\"userBill\") + +pm.collectionVariables.get(\"userBillStep\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"    ",
-							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
 							"",
 							"});",
 							""
@@ -241,13 +241,20 @@
 							"pm.test(\"Successful Create User's chip order\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.cost).to.be.eq( +pm.collectionVariables.get(\"chipOrderCost\"));",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.cost).to.be.eq( +pm.collectionVariables.get(\"chipOrderCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"});",
 							""
 						],
 						"type": "text/javascript",
 						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -291,13 +298,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"pm.test(\"Successful Get User's billing data after chip order\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\") - +pm.collectionVariables.get(\"chipOrderCost\"));",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\") - +pm.collectionVariables.get(\"chipOrderCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"    ",
-							"    pm.collectionVariables.set(\"userBill\", data.bill);",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
 							"});",
 							""
 						],
@@ -365,7 +372,7 @@
 							"    const data = pm.response.json();",
 							"    pm.expect(data[0].type).to.be.eq('success');",
 							"    pm.expect(data[0].text).to.be.eq('Successfully payid your order');",
-							"    pm.expect(data[0].userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data[0].userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"});",
 							""
 						],
@@ -432,8 +439,8 @@
 							"pm.test(\"Successful Create User's expensive order\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.cost).to.be.eq( +pm.collectionVariables.get(\"expensiveOrderCost\"));",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.cost).to.be.eq( +pm.collectionVariables.get(\"expensiveOrderCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"});",
 							""
 						],
@@ -485,8 +492,8 @@
 							"pm.test(\"Should not change User's bill after expensive order\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 							"    const data = pm.response.json();",
-							"    pm.expect(data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\"));",
-							"    pm.expect(data.userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"});",
 							""
 						],
@@ -554,7 +561,7 @@
 							"    const data = pm.response.json();",
 							"    pm.expect(data[0].type).to.be.eq('error');",
 							"    pm.expect(data[0].text).to.be.eq('Not payed your order');",
-							"    pm.expect(data[0].userId).to.be.eq(pm.collectionVariables.get(\"userId\"));",
+							"    pm.expect(+data[0].userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
 							"});",
 							""
 						],

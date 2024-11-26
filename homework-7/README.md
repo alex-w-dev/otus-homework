@@ -40,223 +40,171 @@ newman run otus-homework-7-billing.postman_collection.json --verbose
 Ниже вот такие логи у меня локально:
 
 ```
-PS C:\code\otus-homework\homework-7-billing> newman run otus-homework-7-billing.postman_collection.json --verbose -r cli --reporter-json-export verbose-report.json
+PS C:\code\otus-homework\homework-7> newman run otus-homework-7-billing.postman_collection.json --verbose
 newman
 
 otus-homework-7-billing
 
 → Register
   POST http://arch.homework/user/register
-  201 Created ★ 83ms time ★ 401B↑ 362B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 109B
+  201 Created ★ 95ms time ★ 385B↑ 347B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 94B
   │ {
-  │   "username": "Pamela.Dibbert",
-  │   "email": "Stevie_Streich@hotmail.com",
-  │   "password": "!wxEVvpgwtqNIfIi"
+  │   "username": "Titus98",
+  │   "email": "Dolly2@hotmail.com",
+  │   "password": "!1R7UpJ2CNihBvS1"
   │ }
   └
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 144B
-  │ {"username":"Pamela.Dibbert","email":"Stevie_Streich@hotmail.com","avatarUrl":null,"id":15,"createdAt":"2024-09-20T16:23:55.647Z","role":"USER"}
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 129B
+  │ {"username":"Titus98","email":"Dolly2@hotmail.com","avatarUrl":null,"id":54,"createdAt":"2024-11-26T06:46:47.706Z","role":"USER"}
   └
   prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
-  20ms      6ms    718µs        386µs           69ms             5ms        1ms       104ms
+  19ms      6ms    925µs        421µs           81ms             5ms        919µs     115ms
 
   √  Successful POST create user
 
-→ Unauthorized Update User
-  PATCH http://arch.homework/user/15
-  401 Unauthorized ★ 5ms time ★ 392B↑ 308B↓ size ★ 9↑ 4↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 105B
-  │ {
-  │   "username": "",
-  │   "email": "Anissa.Dickinson22@gmail.com",
-  │   "password": "Emma_Kuhlman80@gmail.com"
-  │ }
-  └
-  ┌ ↓ text/html ★ text ★ html ★ utf8 ★ 172B
-  │ <html>
-  │ <head><title>401 Authorization Required</title></head>
-  │ <body>
-  │ <center><h1>401 Authorization Required</h1></center>
-  │ <hr><center>nginx</center>
-  │ </body>
-  │ </html>
-  └
-  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  926µs     399µs   (cache)      (cache)         2ms              1ms        139µs     5ms
-
-  √  Fail Unauthorized Update User
-
-→ Unauthorized Read Profile
-  GET http://arch.homework/user/profile
-  401 Unauthorized ★ 4ms time ★ 237B↑ 308B↓ size ★ 7↑ 4↓ headers ★ 0 cookies
-  ┌ ↓ text/html ★ text ★ html ★ utf8 ★ 172B
-  │ <html>
-  │ <head><title>401 Authorization Required</title></head>
-  │ <body>
-  │ <center><h1>401 Authorization Required</h1></center>
-  │ <hr><center>nginx</center>
-  │ </body>
-  │ </html>
-  └
-  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       248µs   (cache)      (cache)         2ms              1ms        115µs     5ms
-
-  √  Fail Unauthorized Read Profile
-
 → Login
   POST http://arch.homework/auth/login
-  200 OK ★ 120ms time ★ 367B↑ 538B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 79B
+  200 OK ★ 107ms time ★ 359B↑ 538B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 71B
   │ {
-  │     "email": "Stevie_Streich@hotmail.com",
-  │   "password": "!wxEVvpgwtqNIfIi"
+  │     "email": "Dolly2@hotmail.com",
+  │   "password": "!1R7UpJ2CNihBvS1"
   │ }
   └
   ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 324B
-  │ {"id":15,"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE1LCJpYXQiOjE3MjY4NDk0MzUsImV4cCI6MTcyNjg0OTczNX0.yYYfy_1vgJN-G_FFdWbl3KhEwovRLEk1lfW7xbUJ65Q","refreshT
-  │ oken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE1LCJpYXQiOjE3MjY4NDk0MzUsImV4cCI6MTcyNjkzNTgzNX0.X31f9QgJJucP82kNRl2dSt-83U-_bIjoqBkjNDZR83Q"}
+  │ {"id":54,"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU0LCJpYXQiOjE3MzI2MDM2MDcsImV4cCI6MTczMjYwMzkwN30.7sh5deXYtd4YIeQYbmt-zuI5eL_nmKMJkW5wDD_A0xA","refreshT
+  │ oken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU0LCJpYXQiOjE3MzI2MDM2MDcsImV4cCI6MTczMjY5MDAwN30.Ukgm-BehlT1vX8k6aheom6I-dfG2sUEoilGMHBcx-aI"}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       229µs   (cache)      (cache)         117ms            1ms        147µs     120ms
+  904µs     427µs   (cache)      (cache)         104ms            1ms        109µs     107ms
 
   √  Successful POST login
 
-→ Successful refresh token
-  POST http://arch.homework/auth/refresh
-  201 Created ★ 90ms time ★ 421B↑ 543B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 324B
-  │ {"id":15,"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE1LCJpYXQiOjE3MjY4NDk0MzYsImV4cCI6MTcyNjg0OTczNn0.Zqe0LgHJH1G4sKBsnataxFSAV-HMBrcnpeGmjTtDIDc","refreshT
-  │ oken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE1LCJpYXQiOjE3MjY4NDk0MzYsImV4cCI6MTcyNjkzNTgzNn0.f6aIVQEsxoBtHy0NhKVckttukFNMTx5JG07qFPtU0k4"}
+→ Get User initital Billing data
+  GET http://arch.homework/billing/user
+  200 OK ★ 9ms time ★ 401B↑ 234B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 22B
+  │ {"userId":54,"bill":0}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       245µs   (cache)      (cache)         88ms             1ms        108µs     91ms
+  861µs     261µs   (cache)      (cache)         7ms              1ms        140µs     9ms
 
-  √  Successful refresh token
+  √  Successful Get User's initital billing data
 
-→ Authorized Read Profile
-  GET http://arch.homework/user/profile
-  200 OK ★ 8ms time ★ 401B↑ 439B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 226B
-  │ {"id":15,"username":"Pamela.Dibbert","email":"Stevie_Streich@hotmail.com","avatarUrl":null,"role":"USER","hashedRefreshToken":"$argon2id$v=19$m=65536,t=3,p=4$64wbNJTqGgdev1lum
-  │ qoMNQ$lQStwiwK+1g0G4Ieu145C5C85O4nLuptVWeKtY3w3dw"}
-  └
-  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       536µs   (cache)      (cache)         6ms              1ms        73µs      9ms
-
-  √  Authorized Read Profile
-
-→ Authorized Update User
-  PATCH http://arch.homework/user/15
-  200 OK ★ 31ms time ★ 486B↑ 441B↓ size ★ 10↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 36B
+→ Top Up User's Bill
+  POST http://arch.homework/billing/user/top-up-bill
+  201 Created ★ 24ms time ★ 487B↑ 241B↓ size ★ 10↑ 6↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 21B
   │ {
-  │   "username": "Johnathon.Jast30"
+  │     "bill": 200
   │ }
   └
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 228B
-  │ {"id":15,"username":"Johnathon.Jast30","email":"Stevie_Streich@hotmail.com","avatarUrl":null,"role":"USER","hashedRefreshToken":"$argon2id$v=19$m=65536,t=3,p=4$64wbNJTqGgdev1l
-  │ umqoMNQ$lQStwiwK+1g0G4Ieu145C5C85O4nLuptVWeKtY3w3dw"}
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 24B
+  │ {"userId":54,"bill":200}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  910µs     264µs   (cache)      (cache)         28ms             1ms        74µs      31ms
+  897µs     190µs   (cache)      (cache)         22ms             1ms        84µs      24ms
 
-  √  Authorized Update User Success
+  √  Successful top up user's bill
 
-→ Signout
-  POST http://arch.homework/auth/signout
-  201 Created ★ 9ms time ★ 421B↑ 127B↓ size ★ 9↑ 4↓ headers ★ 0 cookies
-  ↓ text/plain ★ text ★ plain ★ utf8
-
-  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  860µs     176µs   (cache)      (cache)         7ms              1ms        156µs     9ms
-
-  √  Successful POST Signout
-
-→ Unsuccessful try to refresh token Copy
-  POST http://arch.homework/auth/refresh
-  401 Unauthorized ★ 6ms time ★ 421B↑ 337B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 114B
-  │ {"statusCode":401,"timestamp":"2024-09-20T16:23:56.623Z","path":"/auth/refresh","message":"Invalid Refresh Token"}
-  └
-  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       403µs   (cache)      (cache)         4ms              914µs      69µs      6ms
-
-  √  Unsuccessful try to refresh token
-
-→ Register Hacker
-  POST http://arch.homework/user/register
-  201 Created ★ 68ms time ★ 400B↑ 361B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 108B
+→ Make Chip Order
+  POST http://arch.homework/order/user/make-order
+  201 Created ★ 40ms time ★ 484B↑ 270B↓ size ★ 10↑ 6↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 21B
   │ {
-  │   "username": "Mervin_Reynolds",
-  │   "email": "Stephany.Hilll@yahoo.com",
-  │   "password": "!2YLkf0xtDrWKmOq"
+  │     "cost": 150
   │ }
   └
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 143B
-  │ {"username":"Mervin_Reynolds","email":"Stephany.Hilll@yahoo.com","avatarUrl":null,"id":16,"createdAt":"2024-09-20T16:23:56.761Z","role":"USER"}
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 53B
+  │ {"userId":54,"cost":150,"id":46,"payed":0,"closed":0}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       297µs   (cache)      (cache)         66ms             1ms        89µs      69ms
+  840µs     233µs   (cache)      (cache)         37ms             1ms        95µs      39ms
 
-  √  Successful hacker register
+  √  Successful Create User's chip order
 
-→ Login Hacker
-  POST http://arch.homework/auth/login
-  200 OK ★ 105ms time ★ 365B↑ 538B↓ size ★ 9↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 77B
+→ Get User Billing data After Chip order
+  GET http://arch.homework/billing/user
+  200 OK ★ 8ms time ★ 401B↑ 235B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 23B
+  │ {"userId":54,"bill":50}
+  └
+  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
+  728µs     180µs   (cache)      (cache)         6ms              902µs      155µs     8ms
+
+  √  Successful Get User's billing data after chip order
+
+→ Get user notifications
+  GET http://arch.homework/notification/user/notifications
+  200 OK ★ 9ms time ★ 420B↑ 291B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 79B
+  │ [{"id":23,"userId":54,"type":"success","text":"Successfully payid your order"}]
+  └
+  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
+  831µs     182µs   (cache)      (cache)         7ms              981µs      81µs      9ms
+
+  √  Last User notifaction ihas success message after chip order
+
+→ MakeExpensive Order
+  POST http://arch.homework/order/user/make-order
+  201 Created ★ 43ms time ★ 485B↑ 271B↓ size ★ 10↑ 6↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 22B
   │ {
-  │     "email": "Stephany.Hilll@yahoo.com",
-  │   "password": "!2YLkf0xtDrWKmOq"
+  │     "cost": 9999
   │ }
   └
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 324B
-  │ {"id":16,"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE2LCJpYXQiOjE3MjY4NDk0MzYsImV4cCI6MTcyNjg0OTczNn0.nCWiR67v12kBJl8HkMfSzkmLXRrvhHoUg_RpL7l7PhI","refreshT
-  │ oken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE2LCJpYXQiOjE3MjY4NDk0MzYsImV4cCI6MTcyNjkzNTgzNn0.GoBURn8F3hKKb2tgnoM-UITv3Mn9OrqNMBqiXHQ9Zco"}
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 54B
+  │ {"userId":54,"cost":9999,"id":47,"payed":0,"closed":0}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       347µs   (cache)      (cache)         102ms            951µs      134µs     105ms
+  1ms       207µs   (cache)      (cache)         40ms             1ms        145µs     43ms
 
-  √  Successful hacker login
+  √  Successful Create User's expensive order
 
-→ Authorized Hacker Update User
-  PATCH http://arch.homework/user/15
-  403 Forbidden ★ 7ms time ★ 479B↑ 340B↓ size ★ 10↑ 6↓ headers ★ 0 cookies
-  ┌ ↑ raw ★ 29B
-  │ {
-  │   "username": "Aurelio83"
-  │ }
-  └
-  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 120B
-  │ {"statusCode":403,"timestamp":"2024-09-20T16:23:57.042Z","path":"/user/15","message":"You can update only your profile"}
+→ Get User Billing data After Expensive order
+  GET http://arch.homework/billing/user
+  200 OK ★ 8ms time ★ 401B↑ 235B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 23B
+  │ {"userId":54,"bill":50}
   └
   prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
-  1ms       198µs   (cache)      (cache)         5ms              901µs      128µs     7ms
+  835µs     214µs   (cache)      (cache)         6ms              1ms        70µs      8ms
 
-  √  Fail Authorized hacker Update User
+  √  Should not change User's bill after expensive order
+
+→ Get user notifications after Expensive order
+  GET http://arch.homework/notification/user/notifications
+  200 OK ★ 8ms time ★ 420B↑ 359B↓ size ★ 8↑ 6↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 146B
+  │ [{"id":24,"userId":54,"type":"error","text":"Not payed your order"},{"id":23,"userId":54,"type":"success","text":"Successfully payid your order"}]
+  └
+  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
+  769µs     273µs   (cache)      (cache)         6ms              960µs      74µs      8ms
+
+  √  Last User notifaction has ERROR message after chip order
 
 ┌─────────────────────────┬─────────────────────┬────────────────────┐
 │                         │            executed │             failed │
 ├─────────────────────────┼─────────────────────┼────────────────────┤
 │              iterations │                   1 │                  0 │
 ├─────────────────────────┼─────────────────────┼────────────────────┤
-│                requests │                  12 │                  0 │
+│                requests │                  10 │                  0 │
 ├─────────────────────────┼─────────────────────┼────────────────────┤
-│            test-scripts │                  12 │                  0 │
+│            test-scripts │                  10 │                  0 │
 ├─────────────────────────┼─────────────────────┼────────────────────┤
-│      prerequest-scripts │                   3 │                  0 │
+│      prerequest-scripts │                   5 │                  0 │
 ├─────────────────────────┼─────────────────────┼────────────────────┤
-│              assertions │                  12 │                  0 │
+│              assertions │                  10 │                  0 │
 ├─────────────────────────┴─────────────────────┴────────────────────┤
-│ total run duration: 1549ms                                         │
+│ total run duration: 1677ms                                         │
 ├────────────────────────────────────────────────────────────────────┤
-│ total data received: 2.29kB (approx)                               │
+│ total data received: 877B (approx)                                 │
 ├────────────────────────────────────────────────────────────────────┤
-│ average response time: 44ms [min: 4ms, max: 120ms, s.d.: 43ms]     │
+│ average response time: 35ms [min: 8ms, max: 107ms, s.d.: 35ms]     │
 ├────────────────────────────────────────────────────────────────────┤
-│ average DNS lookup time: 718µs [min: 718µs, max: 718µs, s.d.: 0µs] │
+│ average DNS lookup time: 925µs [min: 925µs, max: 925µs, s.d.: 0µs] │
 ├────────────────────────────────────────────────────────────────────┤
-│ average first byte time: 41ms [min: 2ms, max: 117ms, s.d.: 42ms]   │
+│ average first byte time: 32ms [min: 6ms, max: 104ms, s.d.: 33ms]   │
 └────────────────────────────────────────────────────────────────────┘
 ```

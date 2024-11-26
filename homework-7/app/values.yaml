@@ -20,41 +20,73 @@ rabbitmq:
     tls:
       skipVerify: true
       verify: "verify_none"
-  # #START
-  # extraSecrets:
-  #   load-definition:
-  #     load_definition.json: |
-  #       {
-  #         "users": [
-  #           {
-  #             "name": "{{ .Values.auth.username }}",
-  #             "password": "{{ .Values.auth.password }}",
-  #             "tags": "administrator"
-  #           }
-  #         ],
-  #         "vhosts": [
-  #           {
-  #             "name": "/"
-  #           }
-  #         ]
-  #       }
-  # loadDefinition:
-  #   enabled: true
-  #   existingSecret: load-definition
-  # extraConfiguration: |
-  #   load_definitions = /app/load_definition.json
-  # # END
 
 replicaCount: 2
 
 authMicroservice:
   app:
-    repository: "proferio/homework-6"
+    name: "auth-app"
+    repository: "proferio/homework-7"
     tag: "v0.0.1"
     port: 8000
+    amqp:
+      queue: "order-service"
+    paths:
+      - "/"
+      - "/auth"
   service:
     type: ClusterIP
     port: 80
+
+microservices:
+  - app:
+      name: "auth-app"
+      repository: "proferio/homework-7"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "auth-service"
+      paths:
+        - "/auth"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "billing-app"
+      repository: "proferio/homework-7"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "billing-service"
+      paths:
+        - "/billing"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "notification-app"
+      repository: "proferio/homework-7"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "notification-service"
+      paths:
+        - "/notification"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "order-app"
+      repository: "proferio/homework-7"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "order-service"
+      paths:
+        - "/order"
+    service:
+      type: ClusterIP
+      port: 80
 
 prometheus:
   alertmanager:
