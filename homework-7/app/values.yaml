@@ -33,6 +33,8 @@ authMicroservice:
       queue: "order-service"
     paths:
       - "/"
+      - "/user"
+      - "/users"
       - "/auth"
   service:
     type: ClusterIP
@@ -47,6 +49,8 @@ microservices:
       amqp:
         queue: "auth-service"
       paths:
+        - "/user"
+        - "/users"
         - "/auth"
     service:
       type: ClusterIP
