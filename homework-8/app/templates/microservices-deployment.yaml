@@ -1,0 +1,94 @@
+{{- range .Values.microservices }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ .app.name }}-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name }}-{{ .app.name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ $.Release.Name }}-{{ .app.name }}
+    spec:
+      containers:
+        - name: {{ $.Release.Name }}-{{ .app.name }}
+          image: "{{ .app.repository }}:{{ .app.tag }}"
+          ports:
+            - name: liveness-port
+              containerPort: {{ .app.port }}
+
+          env:
+            - name: PORT
+              value: {{ .app.port | quote }}
+            - name: APP_MODULE
+              value: {{ .app.name }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secret
+                  key: JWT_SECRET
+            - name: REFRESH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secret
+                  key: REFRESH_JWT_SECRET
+            - name: JWT_EXPIRE_IN
+              valueFrom:
+                configMapKeyRef:
+                  key: JWT_EXPIRE_IN
+                  name: {{ $.Release.Name }}-config
+            - name: REFRESH_JWT_EXPIRE_IN
+              valueFrom:
+                configMapKeyRef:
+                  key: REFRESH_JWT_EXPIRE_IN
+                  name: {{ $.Release.Name }}-config
+                  
+            - name: MYSQL_HOST
+              value: {{ $.Release.Name }}-mysql-headless.{{ $.Release.Namespace }}.svc.cluster.local
+            - name: MYSQL_PORT
+              value: {{ 3306 | quote}}
+            - name: MYSQL_USERNAME
+              value: root
+            - name: MYSQL_PASSWORD
+              value: {{ $.Values.mysql.auth.rootPassword }}
+            - name: MYSQL_DATABASE
+              value: {{ $.Values.mysql.auth.database}}
+
+            - name: AMQP_QUEUE
+              value: {{ .app.amqp.queue }}
+            - name: AMQP_EXCHANGE
+              value: {{ .app.amqp.exchange | default "amq.direct" }}
+            - name: AMQP_EXCHANGE_TYPE
+              value: {{ .app.amqp.exchangeType | default "direct" }}
+            - name: AMQP_LOGIN
+              value: {{ $.Values.rabbitmq.auth.username }}
+            - name: AMQP_PASSWORD
+              value: {{ $.Values.rabbitmq.auth.password }}
+            - name: AMQP_PORT
+              value: {{ 5672 | quote }}
+            - name: AMQP_HOST
+              value: {{ $.Release.Name }}-rabbitmq-headless.{{ $.Release.Namespace }}.svc.cluster.local
+
+          livenessProbe:
+            exec:
+              command:
+                - cat
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: liveness-port
+            failureThreshold: 10
+            periodSeconds: 10
+
+---
+{{- end }}
