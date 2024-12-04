@@ -1,0 +1,1602 @@
+{
+	"info": {
+		"_postman_id": "37414a2f-3620-400f-bf9b-3583f499f22d",
+		"name": "otus-homework-9-idempotency",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" width=\"2162\" height=\"1530\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2810581"
+	},
+	"item": [
+		{
+			"name": "Get products list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get get public products list\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    pm.expect(data.length).to.be.gte(2);",
+							"",
+							"    const product = data.find(p => +p.count  > 999);",
+							"    pm.collectionVariables.set(\"productId\", +product.id);",
+							"    pm.collectionVariables.set(\"productCost\", +product.cost);",
+							"    pm.collectionVariables.set(\"productCount\", +product.count);",
+							"    const zeroCountPoduct = data.find(p => +p.count === 0);",
+							"    pm.collectionVariables.set(\"zeroCountPoductId\", +zeroCountPoduct.id);",
+							"    pm.collectionVariables.set(\"zeroCountPoductCost\", +zeroCountPoduct.cost);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse_base_url}}/warehouse/products",
+					"host": [
+						"{{warehouse_base_url}}"
+					],
+					"path": [
+						"warehouse",
+						"products"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST create user\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    var jsonData = pm.response.json();",
+							"    pm.collectionVariables.set(\"userId\", jsonData.id);",
+							"    pm.expect(jsonData.username).to.be.eq(pm.collectionVariables.get(\"userUsername\"))",
+							"    pm.expect(jsonData.email).to.be.eq(pm.collectionVariables.get(\"userEmail\"))",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
+							"pm.request.body.raw = repalcedRequestBodyRaw;\r",
+							"const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
+							"pm.collectionVariables.set(\"userEmail\", requestBodyJson.email);\r",
+							"pm.collectionVariables.set(\"userUsername\", requestBodyJson.username);\r",
+							"pm.collectionVariables.set(\"userPassword\", requestBodyJson.password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{$randomUserName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"!{{$randomPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/user/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user",
+						"register"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST login\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.accessToken.length).to.be.greaterThan(1)",
+							"    pm.expect(jsonData.refreshToken.length).to.be.greaterThan(1)",
+							"    pm.expect(jsonData.refreshToken === jsonData.accessToken).to.be.equal(false)",
+							"    pm.collectionVariables.set(\"userAccessToken\", jsonData.accessToken);",
+							"    pm.collectionVariables.set(\"userRefreshToken\", jsonData.refreshToken);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User initital Billing data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's initital billing data\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.bill % (+pm.collectionVariables.get(\"userBillStep\") || 0)).to.be.eq(0);",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Top Up User's Bill",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful top up user's bill\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.bill).to.be.eq( +pm.collectionVariables.get(\"userBill\") + +pm.collectionVariables.get(\"userBillStep\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"bill\": {{userBillStep}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user/top-up-bill",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user",
+						"top-up-bill"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Make Common Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Create User's chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.cost).to.be.eq( +pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    pm.collectionVariables.set(\"chipOrderId\", +data.id);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
+							"const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
+							"requestBodyJson.data.courierTime += 1000000; // make future\r",
+							"pm.request.body.raw = JSON.stringify(requestBodyJson);\r",
+							"pm.collectionVariables.set(\"orderCourierTime\", requestBodyJson.data.courierTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cost\": {{productCost}},\r\n    \"data\": {\r\n        \"products\": [{\r\n            \"productId\": {{productId}},\r\n            \"count\": 1,\r\n            \"cost\": {{productCost}}\r\n        }],\r\n        \"courierTime\": {{$timestamp}}\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/make-order",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"make-order"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Billing data After Chip order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's billing data after chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\") - +pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Last User notifaction ihas success message after chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data[0].type).to.be.eq('success');",
+							"    pm.expect(data[0].text).to.be.eq('Successfully payid your order');",
+							"    pm.expect(+data[0].userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notification_base_url}}/notification/user/notifications",
+					"host": [
+						"{{notification_base_url}}"
+					],
+					"path": [
+						"notification",
+						"user",
+						"notifications"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user payments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Chip order has payed payment\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    const payment = data.find(d => +d.orderId === +pm.collectionVariables.get(\"chipOrderId\"))",
+							"    pm.expect(payment).to.not.eq(undefined);",
+							"    pm.expect(+payment.payed).to.be.eq(1);",
+							"    pm.expect(+payment.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{payment_base_url}}/payment/user/payments",
+					"host": [
+						"{{payment_base_url}}"
+					],
+					"path": [
+						"payment",
+						"user",
+						"payments"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user reserved products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User has reserved products\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    const reservedProduct = data.find(rp => +rp.productId === +pm.collectionVariables.get(\"productId\"));",
+							"    pm.expect(reservedProduct).to.not.eq(undefined);",
+							"    pm.expect(+reservedProduct.cost).to.be.eq(+pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+reservedProduct.count).to.be.eq(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse_base_url}}/warehouse/user/reserved-products/{{chipOrderId}}",
+					"host": [
+						"{{warehouse_base_url}}"
+					],
+					"path": [
+						"warehouse",
+						"user",
+						"reserved-products",
+						"{{chipOrderId}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user reserved couriers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User should have reserved courier\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    const reservedCourier = data[0];",
+							"    pm.expect(reservedCourier).to.not.eq(undefined);",
+							"    pm.expect(+reservedCourier.id).to.be.gte(1);",
+							"    pm.expect(+reservedCourier.time).to.be.eq(+pm.collectionVariables.get(\"orderCourierTime\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{delivery_base_url}}/delivery/user/reserved-couriers/{{chipOrderId}}",
+					"host": [
+						"{{delivery_base_url}}"
+					],
+					"path": [
+						"delivery",
+						"user",
+						"reserved-couriers",
+						"{{chipOrderId}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get products list after normal order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful decrement product's count\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    pm.expect(data.length).to.be.gte(2);",
+							"",
+							"    const product = data.find(p => +p.id  === +pm.collectionVariables.get(\"productId\"));",
+							"    pm.expect(+product.count).to.be.eq(+pm.collectionVariables.get(\"productCount\") - 1);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse_base_url}}/warehouse/products",
+					"host": [
+						"{{warehouse_base_url}}"
+					],
+					"path": [
+						"warehouse",
+						"products"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Make Double of Common Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Dohuld be error on double\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([400]);",
+							"    const data = pm.response.json();",
+							"    console.log(data)",
+							"    pm.expect(data.message.message).to.be.eq( \"Order is already exists\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
+							"const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
+							"requestBodyJson.data.courierTime = +pm.collectionVariables.get(\"orderCourierTime\");\r",
+							"pm.request.body.raw = JSON.stringify(requestBodyJson);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cost\": {{productCost}},\r\n    \"data\": {\r\n        \"products\": [{\r\n            \"productId\": {{productId}},\r\n            \"count\": 1,\r\n            \"cost\": {{productCost}}\r\n        }],\r\n        \"courierTime\": {{$timestamp}}\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/make-order",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"make-order"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Make Double of Common Order With Acepence",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Create User's chip order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.cost).to.be.eq( +pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    pm.collectionVariables.set(\"doubleOrderId\", +data.id);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const repalcedRequestBodyRaw = pm.variables.replaceIn(pm.request.body.raw);\r",
+							"const requestBodyJson = JSON.parse(repalcedRequestBodyRaw)\r",
+							"requestBodyJson.data.courierTime = +pm.collectionVariables.get(\"orderCourierTime\");\r",
+							"pm.request.body.raw = JSON.stringify(requestBodyJson);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cost\": {{productCost}},\r\n    \"doubleAccepted\": true,\r\n    \"data\": {\r\n        \"products\": [{\r\n            \"productId\": {{productId}},\r\n            \"count\": 1,\r\n            \"cost\": {{productCost}}\r\n        }],\r\n        \"courierTime\": {{$timestamp}}\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/make-order",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"make-order"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Billing data After Doubled Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful Get User's billing data after Doubled Order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(+data.bill).to.be.eq(+pm.collectionVariables.get(\"userBill\") - +pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+data.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"    ",
+							"    pm.collectionVariables.set(\"userBill\", +data.bill);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing_base_url}}/billing/user",
+					"host": [
+						"{{billing_base_url}}"
+					],
+					"path": [
+						"billing",
+						"user"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user notifications after Doubled Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Last User notifaction ihas success message after Doubled Order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(data[0].type).to.be.eq('success');",
+							"    pm.expect(data[0].text).to.be.eq('Successfully payid your order');",
+							"    pm.expect(+data[0].userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notification_base_url}}/notification/user/notifications",
+					"host": [
+						"{{notification_base_url}}"
+					],
+					"path": [
+						"notification",
+						"user",
+						"notifications"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user payments after doubleOrderId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Doubled Order has payed payment\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    const payment = data.find(d => +d.orderId === +pm.collectionVariables.get(\"doubleOrderId\"))",
+							"    pm.expect(payment).to.not.eq(undefined);",
+							"    pm.expect(+payment.payed).to.be.eq(1);",
+							"    pm.expect(+payment.userId).to.be.eq(+pm.collectionVariables.get(\"userId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{payment_base_url}}/payment/user/payments",
+					"host": [
+						"{{payment_base_url}}"
+					],
+					"path": [
+						"payment",
+						"user",
+						"payments"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user reserved products after Doubled Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User has reserved products for Doubled Order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    const reservedProduct = data.find(rp => +rp.productId === +pm.collectionVariables.get(\"productId\"));",
+							"    pm.expect(reservedProduct).to.not.eq(undefined);",
+							"    pm.expect(+reservedProduct.cost).to.be.eq(+pm.collectionVariables.get(\"productCost\"));",
+							"    pm.expect(+reservedProduct.count).to.be.eq(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse_base_url}}/warehouse/user/reserved-products/{{doubleOrderId}}",
+					"host": [
+						"{{warehouse_base_url}}"
+					],
+					"path": [
+						"warehouse",
+						"user",
+						"reserved-products",
+						"{{doubleOrderId}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user reserved couriers after Doubled Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User should have reserved courier after Doubled Order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    const reservedCourier = data[0];",
+							"    pm.expect(reservedCourier).to.not.eq(undefined);",
+							"    pm.expect(+reservedCourier.id).to.be.gte(1);",
+							"    pm.expect(+reservedCourier.time).to.be.eq(+pm.collectionVariables.get(\"orderCourierTime\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// этот таймаут нужен для того чтобы предыдущий запрос на формирование заказа успел в асинхронном режиме сдлеать опреации, \r",
+							"// чтобы нам уже раотать с данными после обрабдотки сообщений в rabbitMQ\r",
+							"// await new Promise((resolve) => setTimeout(resolve, 200));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{delivery_base_url}}/delivery/user/reserved-couriers/{{doubleOrderId}}",
+					"host": [
+						"{{delivery_base_url}}"
+					],
+					"path": [
+						"delivery",
+						"user",
+						"reserved-couriers",
+						"{{doubleOrderId}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get products list after Doubled Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful decrement product's count after Doubled Order\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    pm.expect(data.length).to.be.gte(2);",
+							"",
+							"    const product = data.find(p => +p.id  === +pm.collectionVariables.get(\"productId\"));",
+							"    pm.expect(+product.count).to.be.eq(+pm.collectionVariables.get(\"productCount\") - 2);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse_base_url}}/warehouse/products",
+					"host": [
+						"{{warehouse_base_url}}"
+					],
+					"path": [
+						"warehouse",
+						"products"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get user Orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"List of user orders contains common and double orders\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"    const data = pm.response.json();",
+							"    pm.expect(Array.isArray(data)).to.be.eq(true);",
+							"    pm.expect(data.length).to.be.gte(2);",
+							"    pm.expect(data.some(order => +order.id === +pm.collectionVariables.get('chipOrderId'))).to.be.eq(true);",
+							"    pm.expect(data.some(order => +order.id === +pm.collectionVariables.get('doubleOrderId'))).to.be.eq(true);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userAccessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order_base_url}}/order/user/orders",
+					"host": [
+						"{{order_base_url}}"
+					],
+					"path": [
+						"order",
+						"user",
+						"orders"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://arch.homework"
+		},
+		{
+			"key": "billing_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "order_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "notification_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "payment_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "warehouse_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "delivery_base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "productId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "productCost",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "orderCourierTime",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productCount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "zeroCountPoductId",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "zeroCountPoductCost",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "wrongOrderId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "chipOrderCost",
+			"value": "150",
+			"type": "string"
+		},
+		{
+			"key": "chipOrderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "doubleOrderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "expensiveOrderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "expensiveOrderCost",
+			"value": "9999",
+			"type": "string"
+		},
+		{
+			"key": "userBillStep",
+			"value": "2000",
+			"type": "string"
+		},
+		{
+			"key": "userUsername",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userBill",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userEmail",
+			"value": ""
+		},
+		{
+			"key": "userPassword",
+			"value": ""
+		},
+		{
+			"key": "userUsernameUpdate",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userAccessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userRefreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "hackerEmail",
+			"value": ""
+		},
+		{
+			"key": "hackerUsername",
+			"value": ""
+		},
+		{
+			"key": "hackerPassword",
+			"value": ""
+		},
+		{
+			"key": "hackerId",
+			"value": ""
+		},
+		{
+			"key": "hackerAccessToken",
+			"value": ""
+		},
+		{
+			"key": "hackerRefreshToken",
+			"value": ""
+		}
+	]
+}
