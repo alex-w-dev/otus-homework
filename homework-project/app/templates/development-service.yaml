@@ -1,0 +1,13 @@
+{{- if (.Values.development).enabled -}}
+#  теперь твои локальные приложения могут подключиться к сервисам внутри minikube
+#  не забудь использовать forward port  для проксирования порта https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+# kubectl port-forward homework-project-mysql-0 3306:3306
+# kubectl port-forward homework-project-rabbitmq-0 5672:5672
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-development-service
+spec:
+  type: ExternalName
+  externalName: host.minikube.internal
+{{- end -}}

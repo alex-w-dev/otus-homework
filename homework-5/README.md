@@ -16,6 +16,7 @@ https://www.youtube.com/watch?v=2ESOGJTXv1s
 не забыть обновить dependencies :
 
 ```bash
+helm repo update
 helm dependency update
 ```
 

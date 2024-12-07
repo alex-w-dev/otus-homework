@@ -1,0 +1,134 @@
+# use  --set development.enabled=true or:
+# development:
+#   enabled: true
+
+mysql:
+  auth:
+    # тут я еще не разобрался: как установить пароль на БД и в то же время пробросить его в деплоймент ?? поэтому задаю как есть
+    rootPassword: "htrhwrthwtjhwtjwtwthrth"
+    database: "auth3"
+
+rabbitmq:
+  auth:
+    password: "trhkrtkjyerfgvfrrtr"
+    username: "user"
+    tls:
+      enable: false
+      sslOptionsVerify: "verify_none"
+      failIfNoPeerCert: false
+  ldap:
+    tls:
+      skipVerify: true
+      verify: "verify_none"
+
+prometheus:
+  alertmanager:
+    enabled: false
+  pushgateway:
+    enabled: false
+  nodeExporter:
+    enabled: false
+
+grafana:
+  admin:
+    existingSecret: grafana-secret
+    userKey: grafana-user
+    passwordKey: grafana-password
+  persistence:
+    enabled: true
+  service:
+    type: NodePort
+
+replicaCount: 2
+
+microservices:
+  - app:
+      name: "auth-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "auth-service"
+      paths:
+        - "/user"
+        - "/users"
+        - "/auth"
+      publicPaths:
+        - /((user\/register)|(auth\/login)|(auth\/refresh))
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "billing-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "billing-service"
+      paths:
+        - "/billing"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "notification-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "notification-service"
+      paths:
+        - "/notification"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "order-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "order-service"
+      paths:
+        - "/order"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "payment-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "payment-service"
+      paths:
+        - "/payment"
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "warehouse-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "warehouse-service"
+      paths:
+        - "/warehouse"
+      publicPaths:
+        - /warehouse/products
+    service:
+      type: ClusterIP
+      port: 80
+  - app:
+      name: "delivery-app"
+      repository: "proferio/homework-project"
+      tag: "v0.0.1"
+      port: 8000
+      amqp:
+        queue: "delivery-service"
+      paths:
+        - "/delivery"
+    service:
+      type: ClusterIP
+      port: 80
