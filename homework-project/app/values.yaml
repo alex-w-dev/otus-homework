@@ -45,7 +45,7 @@ microservices:
   - app:
       name: "auth-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "auth-service"
@@ -61,7 +61,7 @@ microservices:
   - app:
       name: "billing-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "billing-service"
@@ -73,7 +73,7 @@ microservices:
   - app:
       name: "notification-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "notification-service"
@@ -85,7 +85,7 @@ microservices:
   - app:
       name: "order-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "order-service"
@@ -97,7 +97,7 @@ microservices:
   - app:
       name: "payment-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "payment-service"
@@ -109,7 +109,7 @@ microservices:
   - app:
       name: "warehouse-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "warehouse-service"
@@ -123,7 +123,7 @@ microservices:
   - app:
       name: "delivery-app"
       repository: "proferio/homework-project"
-      tag: "v0.0.1"
+      tag: "v0.0.5"
       port: 8000
       amqp:
         queue: "delivery-service"

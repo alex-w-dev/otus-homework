@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-config
 data:
-  JWT_EXPIRE_IN: "5m"
+  JWT_EXPIRE_IN: "1d"
   REFRESH_JWT_EXPIRE_IN: "1d"

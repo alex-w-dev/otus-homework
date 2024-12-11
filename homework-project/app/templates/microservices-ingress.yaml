@@ -6,6 +6,9 @@ metadata:
     prometheus.io/scrape: 'true'
     prometheus.io/path: '/actuator/prometheus'
     prometheus.io/port: '80'
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "*"
     
     ingress.kubernetes.io/cache-enable: "false"
 
@@ -41,9 +44,12 @@ metadata:
     prometheus.io/scrape: 'true'
     prometheus.io/path: '/actuator/prometheus'
     prometheus.io/port: '80'
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "*"
     
     ingress.kubernetes.io/cache-enable: "false"
-    
+
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
